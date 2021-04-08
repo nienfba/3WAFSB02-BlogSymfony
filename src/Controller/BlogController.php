@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use Faker\Factory;
+use App\Entity\Article;
+use App\Repository\ArticleRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,9 +14,13 @@ class BlogController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index(): Response
+    public function index(ArticleRepository $articleRepository): Response
     {
-        $faker = Factory::create('fr_FR');
+        $articles = $articleRepository->findAll();
+
+        dump($articles);
+
+        /*$faker = Factory::create('fr_FR');
 
         $articles = [];
 
@@ -29,7 +35,7 @@ class BlogController extends AbstractController
             $articles[] = $article;
         }
 
-        dump($articles);
+        dump($articles);*/
         
         return $this->render('blog/index.html.twig', [
             'controller_name' => 'BlogController',

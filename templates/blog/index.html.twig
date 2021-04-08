@@ -15,8 +15,8 @@
                 </h3>
             </a>
             <p class="post-meta">Posté par
-                <a href="#">{{ article.user }}</a>
-                le {{ article.createdAt }}
+                <a href="#"></a>
+                le {{ article.createdAt | date("d-m-Y H:i")}} dans la catégory {{ article.category.title }}
             </p>
         </div>
         <hr>
