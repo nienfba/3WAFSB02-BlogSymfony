@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use Faker\Factory;
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Entity\Category;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -22,7 +23,7 @@ class AppFixtures extends Fixture
 
             $manager->persist($category);
 
-            for ($i=0;$i<10;$i++) {
+            for ($i=0;$i<5;$i++) {
                 $article = new Article();
                 $article->setTitle($faker->sentence())
                 ->setContent($faker->realText(600))
@@ -33,6 +34,18 @@ class AppFixtures extends Fixture
                 ->setValid(true);
 
                 $manager->persist($article);
+
+                for ($k=0;$k<5;$k++) {
+                    $comment = new Comment();
+                    $comment->setPseudo($faker->userName())
+                    ->setComment($faker->realText(300))
+                    ->setEmail($faker->email())
+                    ->setValid(true)
+                    ->setCreatedAt(new \DateTime($faker->date('Y-m-d H:i')))
+                    ->setArticle($article);
+
+                    $manager->persist($comment);
+                }
             }
         }
         $manager->flush();

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Faker\Factory;
 use App\Entity\Article;
+use App\Entity\Category;
 use App\Repository\ArticleRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,32 +17,45 @@ class BlogController extends AbstractController
      */
     public function index(ArticleRepository $articleRepository): Response
     {
-        $articles = $articleRepository->findAll();
+        // Récupération des articles valid triés par date de publication décroissante
+        $articles = $articleRepository->findBy(['valid'=>true], ['publishedAt'=>'DESC']);
 
-        dump($articles);
-
-        /*$faker = Factory::create('fr_FR');
-
-        $articles = [];
-
-        for ($i=0;$i<10;$i++){
-            $article = [];
-            $article['title'] = $faker->sentence();
-            $article['content'] = $faker->realText(600);
-            $article['createdAt'] = $faker->date('d/m/Y H:i');
-            $article['user'] = $faker->name();
-            $article['picture'] = 'https://picsum.photos/300/200?id='.uniqid();
-            //$faker->imageUrl(1920, 1080, 'animals');
-            $articles[] = $article;
-        }
-
-        dump($articles);*/
-        
+        // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
         return $this->render('blog/index.html.twig', [
-            'controller_name' => 'BlogController',
             'articles' => $articles
         ]);
     }
+
+    /**
+     * @Route("/article/{id}", name="article")
+     */
+    public function article(Article $article): Response
+    {
+        //int $id, ArticleRepository $articleRepository
+        //$article = $articleRepository->findOneById($id);
+        
+        // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
+        return $this->render('blog/article.html.twig', [
+            'article' => $article
+        ]);
+    }
+
+    /**
+     * @Route("/category/{id}", name="category")
+     */
+    public function category(Category $category): Response
+    {
+        //int $id, ArticleRepository $articleRepository
+        //$article = $articleRepository->findOneById($id);
+        
+        // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
+        return $this->render('blog/category.html.twig', [
+            'category' => $category
+        ]);
+    }
+
+
+
 
     /**
      * @Route("/page/{page}", name="pages")

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block metaHeader %}
+<span class="meta">Posté par 
+    <a href="#"></a>
+    le {{ article.publishedAt | date("d-m-Y à H:i")}} dans la catégory <a href="{{ path('category',{id:article.category.id}) }}">{{ article.category.title }}</a>
+</span>
+{% endblock %}
+
+{% block imageHeader %}{{ article.picture }}{% endblock %}
+
+{% block body %}
+<article>
+    <div class="container-fluid">
+        <div class="row">
+            {{ article.content }}
+        </div>
+    </div>
+</article>
+
+<section class="comments">
+    {% for comment in article.comments %}
+        <h3><i class="icon-message-square"></i> {{ comment.pseudo }} a écrit :
+            <small>le {{ comment.createdAt | date('d/m/Y à H:i') }} </small>
+        </h3>
+        <p>{{ comment.comment }}</p>
+        <hr>
+    {% endfor %}
+
+</section>
+{% endblock %}

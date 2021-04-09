@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ category.title }} {% endblock %}
+{% block metaHeader %}
+<span class="meta">{{ category.description }}</span>
+{% endblock %}
+
+{% block imageHeader %}{{ category.picture }}{% endblock %}
+
+{% block body %}
+    <p></p>
+    {% for article in category.articles %}
+        {{ include('blog/_article.html.twig') }}
+    {% endfor %}
+{% endblock %}

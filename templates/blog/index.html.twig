@@ -1,24 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blog{% endblock %}
+{% block title %}gAmE & cOdE{% endblock %}
 
 {% block body %}
     {% for article in articles %}
-        <div class="post-preview">
-            <img src="{{ article.picture }}" width="300" class="float-left">
-            <a href="post.html">
-                <h2 class="post-title">
-                    {{ article.title }}
-                </h2>
-                <h3 class="post-subtitle">
-                    {{ article.content }}
-                </h3>
-            </a>
-            <p class="post-meta">Posté par
-                <a href="#"></a>
-                le {{ article.createdAt | date("d-m-Y H:i")}} dans la catégory {{ article.category.title }}
-            </p>
-        </div>
-        <hr>
+        {{ include('blog/_article.html.twig') }}
     {% endfor %}
 {% endblock %}
