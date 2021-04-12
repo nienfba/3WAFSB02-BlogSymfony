@@ -7,7 +7,7 @@
 {% block metaHeader %}
 <span class="meta">Posté par 
     <a href="#"></a>
-    le {{ article.publishedAt | date("d-m-Y à H:i")}} dans la catégory <a href="{{ path('category',{id:article.category.id}) }}">{{ article.category.title }}</a>
+    le {{ article.publishedAt | date("d-m-Y à H:i")}} dans la catégory <a href="{{ path('category',{slug:article.category.slug}) }}">{{ article.category.title }}</a>
 </span>
 {% endblock %}
 

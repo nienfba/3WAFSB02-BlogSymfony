@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}{% endblock %} - Admin blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('css/picto.css') }}">
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/tinyMCE/tinymce.min.js') }}"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" href="{{ path('admin') }}">Admin Blog</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% if app.request.get('_route') == 'admin' %}active{% endif %}">
+                <a class="nav-link" href="{#{{ path('admin') }} #}">Accueil</a>
+            </li>
+            <li
+                class="nav-item dropdown {% if app.request.get('_route') starts with 'article_' %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarArticle" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Articles
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarArticle">
+                    <a class="dropdown-item {% if app.request.get('_route') == 'listeArticles' %}active{% endif %}"
+                        href="{# {{ path('listArticles') }}#}">Liste</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item  {% if app.request.get('_route') == 'article_add' %}active{% endif %}"
+                        href="{# {{ path('article_add') }}#}">Ajouter</a>
+                </div>
+            </li>
+            <li
+                class="nav-item dropdown {% if app.request.get('_route') starts with 'category_' %}active{% endif %}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarUser" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Catégories
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarUser">
+                    <a class="dropdown-item"
+                        href="{{ path('category_list') }}">Liste</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item {% if app.request.get('_route') == 'category_add' %}active{% endif %}"
+                        href="{{ path('category_add') }}">Ajouter</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="">Commentaires</a>
+            </li>
+            <li
+                class="nav-item dropdown ">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarUser" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Utilisateurs
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarUser">
+                    <a class="dropdown-item"
+                        href="{#{{ path('listUsers') }}#}">Liste</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item"
+                        href="{#{{ path('addUser') }}#}">Ajouter</a>
+                </div>
+            </li>
+        </ul>
+
+        Bienvenue  {#{{ app.user.firstname }} {{ app.user.lastname }} - <a href="{{ path('app_logout') }}" class="btn btn-light">Logout</a> #}
+
+    </div>
+</nav>
+    <div class="container mb-4">
+        <h1>{{ block('title') }}</h1>
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success" role="alert">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <p>{{ message }}</p>
+            </div>
+        {% endfor %}
+
+        {% block body %}{% endblock %}
+    </div>
+
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer cet element ?
+                </div>
+                <div class="modal-footer">
+                    <form action="#" id="formdelete" method="POST">
+                        <input type="hidden" value="" name="id" id="deleteId">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //TinyMCE
+        tinymce.init({
+            selector: 'textarea',
+            height: 300,
+            relative_urls: false,
+            plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table paste imagetools wordcount"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+            content_css: [
+                '{{ asset("css/bootstrap.min.css") }}',
+                '{{ asset("css/editor.css") }}'
+            ]
+            //images_upload_url: ''
+        });
+
+
+
+        //Modal delete Bootstrap
+        $('#delete').on('show.bs.modal', function (e) {
+            $('#formdelete').attr("action", e.relatedTarget.href);
+            $('#formdelete #deleteId').val(e.relatedTarget.dataset.id);
+        });
+
+        $('input:checkbox').change(function () {
+            console.log($(this).prop('checked'));
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+{% extends 'admin.html.twig' %}
+
+{% form_theme form "bootstrap_4_layout.html.twig" %}
+
+{% block title %}Ajouter une catégorie{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="submit" value="Commenter">
+    {{ form_end(form) }}
+{% endblock %}
+
+

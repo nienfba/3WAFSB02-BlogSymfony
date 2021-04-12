@@ -1,0 +1,32 @@
+{% extends 'admin.html.twig' %}
+{% block title %}Tous les catégories{% endblock %}
+
+{% block body %}
+<section>
+    <p class="text-right"><a href="{{ path('category_add') }}" class="btn btn-primary"><i class="icon-plus-square"></i> Ajouter une
+            catégorie</a></p>
+    <table id="tableDonnee" class="table">
+        <thead>
+            <th>Image</th>
+            <th>Titre</th>
+            <th>Description</th>
+            <th></th>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{% if category.picture != null %}
+                    <img class="img-thumbnail" width="150"
+                        src="{{ category.picture }}">
+                    {% endif %}</td>
+                <td>{{ category.title }}</td>
+                <td>{{ category.description|striptags|u.truncate(50, true, '...')|raw|nl2br }}</td>
+                <td><a href="{{ path('category_edit', {id:category.id}) }}"><i class="icon-edit"></i></a> <a
+                        href="{# {{ path('deleteCategory', {id:category.id}) }} #}" data-toggle="modal" data-target="#delete"
+                        data-id=" {{ category.id }}"><i class="icon-trash"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

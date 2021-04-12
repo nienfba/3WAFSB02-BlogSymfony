@@ -1,0 +1,18 @@
+.big
+{
+    font-size:1.6rem;
+}
+
+.green
+{
+    color:forestgreen;
+}
+
+.red
+{
+    color:red;
+}
+
+.list-group li>ul>li {
+  border:0px;
+}

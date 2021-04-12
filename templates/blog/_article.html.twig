@@ -1,6 +1,6 @@
 <div class="post-preview">
     <img src="{{ article.picture }}" width="300" class="float-left mr-3">
-    <a href="{{ path('article', { id:article.id }) }}">
+    <a href="{{ path('article', { slug:article.slug }) }}">
         <h2 class="post-title">
             {{ article.title }}
         </h2>
@@ -9,7 +9,7 @@
     <p class="post-meta">Posté par
         <a href="#"></a>
         le {{ article.publishedAt | date("d-m-Y à H:i")}} dans la catégory <a
-            href="{{ path('category',{id:article.category.id}) }}">{{ article.category.title }}</a>
+            href="{{ path('category',{slug:article.category.slug}) }}">{{ article.category.title }}</a>
     </p>
 </div>
 <hr>

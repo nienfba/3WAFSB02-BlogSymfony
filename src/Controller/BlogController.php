@@ -31,7 +31,7 @@ class BlogController extends AbstractController
     }
 
     /**
-     * @Route("/article/{id}", name="article")
+     * @Route("/article/{slug}", name="article")
      */
     public function article(Article $article, Request $request, EntityManagerInterface $manager): Response
     {
@@ -59,7 +59,7 @@ class BlogController extends AbstractController
             /* Mettre dans la session que le commentaira bien été enregistré !*/
             $this->addFlash('success','Votre commentaire a bien été ajouté');
 
-            return $this->redirectToRoute('article', ['id' => $article->getId()]);
+            return $this->redirectToRoute('article', ['slug' => $article->getSlug()]);
         }
 
         
@@ -71,7 +71,7 @@ class BlogController extends AbstractController
     }
 
     /**
-     * @Route("/category/{id}", name="category")
+     * @Route("/category/{slug}", name="category")
      */
     public function category(Category $category): Response
     {
