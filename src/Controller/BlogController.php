@@ -4,8 +4,12 @@ namespace App\Controller;
 
 use Faker\Factory;
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Entity\Category;
+use App\Form\CommentType;
 use App\Repository\ArticleRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,14 +33,40 @@ class BlogController extends AbstractController
     /**
      * @Route("/article/{id}", name="article")
      */
-    public function article(Article $article): Response
+    public function article(Article $article, Request $request, EntityManagerInterface $manager): Response
     {
         //int $id, ArticleRepository $articleRepository
         //$article = $articleRepository->findOneById($id);
+
+        $comment = new Comment();
+
+        $form = $this->createForm(CommentType::class, $comment);
+
+        //On va lier l'objet formulaire avec la requête HTTP
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            /* On renseigne les données complémentaire nécessaire !*/
+            $comment->setCreatedAt(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+            $comment->setValid(true);
+            $comment->setArticle($article);
+
+            /** On enregistre le commentaire */
+            $manager->persist($comment);
+            $manager->flush();
+
+            /* Mettre dans la session que le commentaira bien été enregistré !*/
+            $this->addFlash('success','Votre commentaire a bien été ajouté');
+
+            return $this->redirectToRoute('article', ['id' => $article->getId()]);
+        }
+
         
         // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
         return $this->render('blog/article.html.twig', [
-            'article' => $article
+            'article' => $article,
+            'form' => $form->createView()
         ]);
     }
 

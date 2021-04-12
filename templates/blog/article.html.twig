@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% form_theme form "bootstrap_4_layout.html.twig" %}
+
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block metaHeader %}
@@ -12,6 +14,12 @@
 {% block imageHeader %}{{ article.picture }}{% endblock %}
 
 {% block body %}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+
 <article>
     <div class="container-fluid">
         <div class="row">
@@ -21,6 +29,16 @@
 </article>
 
 <section class="comments">
+    <h3>Ecrire un commentaire</h3>
+    
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="submit" value="Commenter">
+    {{ form_end(form) }}
+
+
+
+    <h3>Commentaires</h3>
     {% for comment in article.comments %}
         <h3><i class="icon-message-square"></i> {{ comment.pseudo }} a écrit :
             <small>le {{ comment.createdAt | date('d/m/Y à H:i') }} </small>
