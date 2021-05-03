@@ -7,8 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
+ * @Assert\EnableAutoMapping()
  */
 class Article
 {
@@ -36,8 +40,17 @@ class Article
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\DisableAutoMapping()
+     * @Gedmo\Timestampable(on="create")
      */
     private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Assert\DisableAutoMapping()
+     * @Gedmo\Timestampable(on="update")
+     */
+    private $updatedAt;
 
     /**
      * @ORM\Column(type="datetime")
@@ -62,6 +75,8 @@ class Article
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\DisableAutoMapping()
+     * @Gedmo\Slug(fields={"title"})
      */
     private $slug;
 
@@ -197,6 +212,18 @@ class Article
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

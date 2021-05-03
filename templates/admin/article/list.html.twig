@@ -1,0 +1,36 @@
+{% extends 'admin.html.twig' %}
+{% block title %}Tous les catégories{% endblock %}
+
+{% block body %}
+<section>
+    <p class="text-right"><a href="{{ path('article_add') }}" class="btn btn-primary"><i class="icon-plus-square"></i> Ajouter un
+            article</a></p>
+    <table id="tableDonnee" class="table">
+        <thead>
+            <th>Image</th>
+            <th>Titre</th>
+            <th>Date de création</th>
+            <th>Date de publication</th>
+            <th>Catégorie</th>
+            <th></th>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{% if article.picture != null %}
+                    <img class="img-thumbnail" width="150"
+                        src="{{ article.picture }}">
+                    {% endif %}</td>
+                <td>{{ article.title }}</td>
+                <td>{{ article.createdAt | date('d/m/Y h:i') }}</td>
+                <td>{{ article.publishedAt | date('d/m/Y h:i') }}</td>
+                <td>{{ article.category.title }}</td>
+                <td><a href="{{ path('article_edit', {id:article.id}) }}"><i class="icon-edit"></i></a> <a
+                        href="{# {{ path('article_del', {id:article.id}) }} #}" data-toggle="modal" data-target="#delete"
+                        data-id=" {{ article.id }}"><i class="icon-trash"></i></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

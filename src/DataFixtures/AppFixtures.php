@@ -19,7 +19,7 @@ class AppFixtures extends Fixture
             $category = new Category();
             $category->setTitle($faker->sentence())
                 ->setDescription($faker->realText(300))
-                ->setSlug($faker->slug())
+                ->setCreatedAt(new \DateTime($faker->date('Y-m-d H:i')))
                 ->setPicture('https://picsum.photos/300/200?id='.uniqid());
 
             $manager->persist($category);
@@ -31,7 +31,6 @@ class AppFixtures extends Fixture
                 ->setCreatedAt(new \DateTime($faker->date('Y-m-d H:i')))
                 ->setPublishedAt(new \DateTime($faker->date('Y-m-d H:i')))
                 ->setPicture('https://picsum.photos/300/200?id='.uniqid())
-                ->setSlug($faker->slug())
                 ->setCategory($category)
                 ->setValid(true);
 

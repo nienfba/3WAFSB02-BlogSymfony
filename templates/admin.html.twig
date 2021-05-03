@@ -35,7 +35,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarArticle">
                     <a class="dropdown-item {% if app.request.get('_route') == 'listeArticles' %}active{% endif %}"
-                        href="{# {{ path('listArticles') }}#}">Liste</a>
+                        href="{{ path('article_list') }}">Liste</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item  {% if app.request.get('_route') == 'article_add' %}active{% endif %}"
                         href="{# {{ path('article_add') }}#}">Ajouter</a>
