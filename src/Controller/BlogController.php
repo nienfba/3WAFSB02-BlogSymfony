@@ -8,6 +8,8 @@ use App\Entity\Comment;
 use App\Entity\Category;
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
+use App\Service\MessageGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,17 +18,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class BlogController extends AbstractController
 {
+
+    const MAX_ARTICLE_BY_PAGE = 10;
+
     /**
      * @Route("/", name="home")
+     * @Route("/view/{page}", name="homePage")
      */
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(int $page = 0, ArticleRepository $articleRepository, MessageGenerator $messageGenerator): Response
     {
-        // Récupération des articles valid triés par date de publication décroissante
-        $articles = $articleRepository->findBy(['valid'=>true], ['publishedAt'=>'DESC']);
+        //On récupète le nombre d'article
+        $countArticle = $articleRepository->count();
+        $pageNumber = floor($countArticle/self::MAX_ARTICLE_BY_PAGE);
 
+        // Récupération des articles valid triés par date de publication décroissante
+        $articles = $articleRepository->findAllByDateAndValid(self::MAX_ARTICLE_BY_PAGE, self::MAX_ARTICLE_BY_PAGE*$page);
+
+        
         // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
         return $this->render('blog/index.html.twig', [
-            'articles' => $articles
+            'articles'      => $articles,
+            'message'       => $messageGenerator->getHappyMessage(),
+            'nextPage'      => ($page<$pageNumber)?$page+1:null,
+            'previousPage'  => ($page>0)?$page-1:null
         ]);
     }
 
@@ -35,7 +49,6 @@ class BlogController extends AbstractController
      */
     public function article(Article $article, Request $request, EntityManagerInterface $manager): Response
     {
-
         $comment = new Comment();
 
         $form = $this->createForm(CommentType::class, $comment);
@@ -65,6 +78,22 @@ class BlogController extends AbstractController
         return $this->render('blog/article.html.twig', [
             'article' => $article,
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/categories", name="categories")
+     */
+    public function categories(CategoryRepository $categoryRepository): Response
+    {
+        //int $id, ArticleRepository $articleRepository
+        //$article = $articleRepository->findOneById($id);
+
+        $categories = $categoryRepository->findBy([], ['title'=>'ASC']);
+        
+        // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
+        return $this->render('blog/categories.html.twig', [
+            'categories' => $categories
         ]);
     }
 

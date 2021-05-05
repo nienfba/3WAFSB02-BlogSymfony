@@ -54,6 +54,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('home') }}">Home</a>
                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="{{ path('categories') }}">Catégories</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('pages', {page:'about'}) }}">A propos</a>
                     </li>
@@ -84,16 +87,10 @@
     </header>
 
     <!-- Main Content -->
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-lg-8 col-md-10 mx-auto">
-                
                 {% block body %}{% endblock %}
-                
-                <!-- Pager -->
-                <div class="clearfix">
-                    <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
-                </div>
             </div>
         </div>
     </div>

@@ -11,7 +11,7 @@
 </span>
 {% endblock %}
 
-{% block imageHeader %}{{ article.picture }}{% endblock %}
+{% block imageHeader %}{% if 'https://' not in article.picture %}{{ asset('uploads/article/' ~ article.picture )}}{% else %}{{ article.picture }}{% endif %}{% endblock %}
 
 {% block body %}
 {% for message in app.flashes('success') %}
@@ -23,7 +23,7 @@
 <article>
     <div class="container-fluid">
         <div class="row">
-            {{ article.content }}
+            {{ article.content|raw }}
         </div>
     </div>
 </article>
@@ -39,7 +39,7 @@
 
 
     <h3>Commentaires</h3>
-    {% for comment in article.comments %}
+    {% for comment in article.commentsValid %}
         <h3><i class="icon-message-square"></i> {{ comment.pseudo }} a écrit :
             <small>le {{ comment.createdAt | date('d/m/Y à H:i') }} </small>
         </h3>

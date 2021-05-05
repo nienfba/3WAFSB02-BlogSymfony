@@ -2,14 +2,14 @@
 
 {% block title %}{{ category.title }} {% endblock %}
 {% block metaHeader %}
-<span class="meta">{{ category.description }}</span>
+<span class="meta">{{ category.description | raw }}</span>
 {% endblock %}
 
-{% block imageHeader %}{{ category.picture }}{% endblock %}
+{% block imageHeader %}{% if 'https://' not in category.picture %}{{ asset('uploads/category/' ~ category.picture )}}{% else %}{{ category.picture }}{% endif %}{% endblock %}
 
 {% block body %}
     <p></p>
-    {% for article in category.articles %}
+    {% for article in category.getArticlesValid(true) %}
         {{ include('blog/_article.html.twig') }}
     {% endfor %}
 {% endblock %}

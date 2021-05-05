@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les catégories{% endblock %}
+
+{% block body %}
+    <div class="card-columns">
+    {% for category in categories %}
+        <div class="card">
+            <h3 class="card-header"><a href="{{ path('category',{slug:category.slug}) }}">{{ category.title}}</a></h3>
+            <img src="{% if 'https://' not in category.picture %}{{ asset('uploads/category/' ~ category.picture )}}{% else %}{{ category.picture }}{% endif %}" class="card-img-top">
+            <div class="card-body">
+                <p class="card-text">{{ category.description|u.truncate(50,'...',true)|raw}}
+            </div>
+            
+            <div class="card-footer text-muted">
+                <a href="{{ path('category',{slug:category.slug}) }}">Articles dans la catégorie : {{ category.articlesValid|length}}</a>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

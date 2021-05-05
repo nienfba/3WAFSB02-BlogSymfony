@@ -1,11 +1,11 @@
 <div class="post-preview">
-    <img src="{{ article.picture }}" width="300" class="float-left mr-3">
+    <img src="{% if 'https://' not in article.picture %}{{ asset('uploads/article/' ~ article.picture )}}{% else %}{{ article.picture }}{% endif %}" width="300" class="float-left mr-3">
     <a href="{{ path('article', { slug:article.slug }) }}">
         <h2 class="post-title">
             {{ article.title }}
         </h2>
     </a>
-    <p>{{ article.content | u.truncate(100,'...') }}</p>
+    <p>{{ article.content|striptags|u.truncate(100, '...', true)|raw}}</p>
     <p class="post-meta">Posté par
         <a href="#"></a>
         le {{ article.publishedAt | date("d-m-Y à H:i")}} dans la catégory <a

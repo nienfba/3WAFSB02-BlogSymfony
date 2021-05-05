@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\ArticleRepository;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\Criteria;
+
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ArticleRepository::class)
@@ -69,7 +70,6 @@ class Article
 
     /**
      * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="article", orphanRemoval=true)
-     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $comments;
 
@@ -202,6 +202,20 @@ class Article
         }
 
         return $this;
+    }
+
+
+    /** Applique un critère sur la requête des commentaires. Permet d'obtenir les commentaires valides ou non
+     * @param bool $valid true ou false
+     * 
+     * @return Collection|Comment[]
+    */
+    public function getCommentsValid(bool $valid=true) : Collection
+    {
+        $criteria = Criteria::create()
+        ->where(Criteria::expr()->eq('valid', $valid))
+        ->orderBy(['createdAt' => 'DESC']);
+        return $this->comments->matching($criteria);
     }
 
     public function getSlug(): ?string

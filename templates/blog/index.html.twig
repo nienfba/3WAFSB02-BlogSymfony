@@ -1,9 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}gAmE & cOdE{% endblock %}
+{% block title %}gAmE & cOdE {% endblock %}
+
+{% block metaHeader %}{{ message }}{% endblock %}
 
 {% block body %}
     {% for article in articles %}
         {{ include('blog/_article.html.twig') }}
     {% endfor %}
+    <!-- Pager -->
+    <div class="clearfix">
+        {% if previousPage is not same as(null)  %}
+            <a class="btn btn-primary float-left" href="{% if previousPage == 0 %}{{ path('home') }} {% else %} {{ path('homePage',{page:previousPage}) }}{% endif %}">&larr; Article suivants</a>
+        {% endif %}
+         {% if nextPage is not same as(null)  %}
+             <a class="btn btn-primary float-right" href="{{ path('homePage',{page:nextPage}) }}">Article précédents &rarr;</a>
+        {% endif %}
+    </div>
 {% endblock %}

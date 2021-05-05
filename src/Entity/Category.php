@@ -4,11 +4,12 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CategoryRepository;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\Criteria;
+
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-
 use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  * @Assert\EnableAutoMapping()
@@ -40,6 +41,7 @@ class Category
 
     /**
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="category")
+     * @ORM\OrderBy({"publishedAt" = "DESC"})
      */
     private $articles;
 
@@ -137,6 +139,23 @@ class Category
         }
 
         return $this;
+    }
+
+
+    /** Applique un critère sur la requête des articles. Permet d'obtenir les articles valides ou non
+     * @param bool $valid true ou false
+     * 
+     * @return Collection|Article[]
+    */
+    public function getArticlesValid(bool $valid=true) : Collection
+    {
+        $criteria = Criteria::create()
+        ->where(Criteria::expr()->eq('valid', $valid))
+        ->andWhere(Criteria::expr()->lte('publishedAt', new \DateTimeImmutable('now', new \DateTimeZone('Europe/Paris'))))
+        ->orderBy(['publishedAt' => 'DESC']);
+        
+        dump($criteria);
+        return $this->articles->matching($criteria);
     }
 
     public function getSlug(): ?string

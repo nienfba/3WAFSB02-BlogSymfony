@@ -1,0 +1,37 @@
+{% extends 'admin.html.twig' %}
+{% block title %}Tous les commentaires{% endblock %}
+
+{% block body %}
+<section>
+    <table id="tableDonnee" class="table">
+        <thead>
+            <th>Pseudo</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Article</th>
+            <th>Valide</th>
+            <th></th>
+        </thead>
+        <tbody>
+            {% for comment in comments %}
+            <tr class="table-secondary">
+                <td>{{ comment.pseudo }}</td>
+                <td>{{ comment.email }}</td>
+                <td>{{ comment.createdAt|date('d/m/Y H:i') }}</td>
+                <td><span class="badge badge-pill badge-success">{{ comment.article.title }}</span></td>
+                <td>
+                   <span class="d-none">{{ comment.valid }}</span>
+                   <a href="{{ path('comment_publish', {id:comment.id} ) }}"><i class="big {% if comment.valid == true %}green icon-toggle-right{% else %}red icon-toggle-left{% endif %}"></i></a> 
+                </td>
+                <td>
+                    <a href="{{ path('comment_del_confirm', {'id': comment.id}) }}" data-title="{{ comment.pseudo ~ ' : ' ~ comment.email }}" data-toggle="modal" data-target="#delete"><i class="icon-trash"></i></a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">{{ comment.comment }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

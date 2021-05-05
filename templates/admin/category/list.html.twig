@@ -18,10 +18,10 @@
             <tr>
                 <td>{% if category.picture != null %}
                     <img class="img-thumbnail" width="150"
-                        src="{{ category.picture }}">
+                        src="{% if 'https://' not in category.picture %}{{ asset('uploads/category/' ~ category.picture )}}{% else %}{{ category.picture }}{% endif %}">
                     {% endif %}</td>
                 <td>{{ category.title }}</td>
-                <td>{{ category.description|striptags|u.truncate(50, true, '...')|raw|nl2br }}</td>
+                <td>{{ category.description|striptags|u.truncate(50, '...', true)|raw }}</td>
                 <td>{{ category.articles|length }}</td>
                 <td>
                     <a href="{{ path('category_edit', {id:category.id}) }}"><i class="icon-edit"></i></a> 

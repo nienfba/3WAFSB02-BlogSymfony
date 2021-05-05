@@ -9,8 +9,10 @@
         <thead>
             <th>Image</th>
             <th>Titre</th>
-            <th>Date de création</th>
-            <th>Date de publication</th>
+            <th>Création</th>
+            <th>Modification</th>
+            <th>Publication</th>
+            <th>Valid</th>
             <th>Catégorie</th>
             <th></th>
         </thead>
@@ -19,12 +21,17 @@
             <tr>
                 <td>{% if article.picture != null %}
                     <img class="img-thumbnail" width="150"
-                        src="{{ article.picture }}">
+                        src="{% if 'https://' not in article.picture %}{{ asset('uploads/article/' ~ article.picture )}}{% else %}{{ article.picture }}{% endif %}">
                     {% endif %}</td>
                 <td>{{ article.title }}</td>
                 <td>{{ article.createdAt | date('d/m/Y h:i') }}</td>
+                <td>{{ article.updatedAt | date('d/m/Y h:i') }}</td>
                 <td>{{ article.publishedAt | date('d/m/Y h:i') }}</td>
-                <td>{{ article.category.title }}</td>
+                 <td>
+                   <span class="d-none">{{ article.valid }}</span>
+                   <a href="{{ path('article_publish', {id:article.id} ) }}"><i class="big {% if article.valid == true %}green icon-toggle-right{% else %}red icon-toggle-left{% endif %}"></i></a> 
+                </td>
+                <td><span class="badge badge-pill badge-success">{{ article.category.title }}</span></td>
                 <td><a href="{{ path('article_edit', {id:article.id}) }}"><i class="icon-edit"></i></a> 
                     <a href="{{ path('article_del_confirm', {id:article.id}) }}" data-toggle="modal" data-target="#delete" data-title="{{ article.title }}"><i class="icon-trash"></i></a>
                 </td>
