@@ -35,8 +35,6 @@ class BlogController extends AbstractController
      */
     public function article(Article $article, Request $request, EntityManagerInterface $manager): Response
     {
-        //int $id, ArticleRepository $articleRepository
-        //$article = $articleRepository->findOneById($id);
 
         $comment = new Comment();
 
@@ -47,7 +45,7 @@ class BlogController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /* On renseigne les données complémentaire nécessaire !*/
+            /* On renseigne les données complémentaire nécessaire au commentaire !*/
             $comment->setCreatedAt(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
             $comment->setValid(true);
             $comment->setArticle($article);
@@ -83,8 +81,6 @@ class BlogController extends AbstractController
             'category' => $category
         ]);
     }
-
-
 
 
     /**

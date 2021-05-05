@@ -80,12 +80,13 @@
 </nav>
     <div class="container mb-4">
         <h1>{{ block('title') }}</h1>
-        
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-dismissible alert-success" role="alert">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <p>{{ message }}</p>
-            </div>
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-dismissible alert-{{ type }}" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <p>{{ message }}</p>
+                </div>
+            {% endfor %}
         {% endfor %}
 
         {% block body %}{% endblock %}
@@ -103,10 +104,12 @@
                 </div>
                 <div class="modal-body">
                     Êtes-vous sûr de vouloir supprimer cet element ?
+                    <h5 id="title"></h5>
                 </div>
                 <div class="modal-footer">
                     <form action="#" id="formdelete" method="POST">
-                        <input type="hidden" value="" name="id" id="deleteId">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-value') }}">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Supprimer</button>
                     </form>
@@ -134,12 +137,10 @@
             //images_upload_url: ''
         });
 
-
-
         //Modal delete Bootstrap
         $('#delete').on('show.bs.modal', function (e) {
-            $('#formdelete').attr("action", e.relatedTarget.href);
-            $('#formdelete #deleteId').val(e.relatedTarget.dataset.id);
+            $('#delete #formdelete').attr("action", e.relatedTarget.href);
+            $('#delete #title').text(e.relatedTarget.dataset.title);
         });
 
         $('input:checkbox').change(function () {

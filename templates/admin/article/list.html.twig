@@ -1,5 +1,5 @@
 {% extends 'admin.html.twig' %}
-{% block title %}Tous les catégories{% endblock %}
+{% block title %}Tous les articles{% endblock %}
 
 {% block body %}
 <section>
@@ -25,9 +25,9 @@
                 <td>{{ article.createdAt | date('d/m/Y h:i') }}</td>
                 <td>{{ article.publishedAt | date('d/m/Y h:i') }}</td>
                 <td>{{ article.category.title }}</td>
-                <td><a href="{{ path('article_edit', {id:article.id}) }}"><i class="icon-edit"></i></a> <a
-                        href="{# {{ path('article_del', {id:article.id}) }} #}" data-toggle="modal" data-target="#delete"
-                        data-id=" {{ article.id }}"><i class="icon-trash"></i></a></td>
+                <td><a href="{{ path('article_edit', {id:article.id}) }}"><i class="icon-edit"></i></a> 
+                    <a href="{{ path('article_del_confirm', {id:article.id}) }}" data-toggle="modal" data-target="#delete" data-title="{{ article.title }}"><i class="icon-trash"></i></a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

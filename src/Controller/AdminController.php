@@ -75,6 +75,40 @@ class AdminController extends AbstractController
         ]);
     }
 
+     /**
+     * @Route("/category/del/{id}", name="category_del", methods={"GET"})
+     */
+    public function categoryDel(Category $category): Response
+    {
+        return $this->render('admin/category/del.html.twig', [
+            'category' => $category
+        ]);
+    }
+
+    /**
+     * @Route("/category/del/{id}", name="category_del_confirm", methods={"DELETE"})
+     */
+    public function categoryDelConfirm(Category $category, Request $request, EntityManagerInterface $manager): Response
+    {
+        if ($this->isCsrfTokenValid('delete-value', $request->request->get('_token'))) {
+            if (count($category->getArticles()) == 0) {
+                $manager->remove($category);
+                $manager->flush();
+
+                $this->addFlash('success', 'L\'article ('.$category->getTitle().')  a bien été supprimé');
+            }
+            else {
+                $this->addFlash('warning', 'La catégorie est rattachée à des articles et ne peut pas être supprimé !');
+            }
+        }
+        else {
+            $this->addFlash('danger','Erreur de token ! Merci de reconfirmer !');
+        }
+
+        return $this->redirectToRoute('category_list');
+
+    }
+
 
      /**
      * @Route("/article/list", name="article_list")
@@ -120,7 +154,36 @@ class AdminController extends AbstractController
         // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
         return $this->render('admin/article/add.html.twig', [
             'form' => $form->createView(),
-            'edit' => ($article->getId())?false:true
+            'edit' => ($article->getId())?true:false
         ]);
+    }
+
+    /**
+     * @Route("/article/del/{id}", name="article_del", methods={"GET"})
+     */
+    public function articleDel(Article $article): Response
+    {
+        return $this->render('admin/article/del.html.twig', [
+            'article' => $article
+        ]);
+    }
+
+    /**
+     * @Route("/article/del/{id}", name="article_del_confirm", methods={"DELETE"})
+     */
+    public function articleDelConfirm(Article $article, Request $request, EntityManagerInterface $manager): Response
+    {
+        if ($this->isCsrfTokenValid('delete-value', $request->request->get('_token'))) {
+            $manager->remove($article);
+            $manager->flush();
+
+            $this->addFlash('success','L\'article ('.$article->getTitle().')  a bien été supprimé');
+        }
+        else {
+            $this->addFlash('danger','Erreur de token ! Merci de reconfirmer !');
+        }
+
+        return $this->redirectToRoute('article_list');
+
     }
 }

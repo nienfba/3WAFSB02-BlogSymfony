@@ -1,0 +1,14 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Voulez vous supprimez l'article "{{ article.title }}" {% endblock %}
+
+
+{% block body %}
+<form method="POST" action="{{ path('article_del_confirm', {'id': article.id}) }}">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete-value') }}">
+
+    <a href="{{ path('article_list') }}" class="btn btn-secondary">Retour</a>
+    <input type="submit" class="btn btn-success" value="Supprimer">
+</form>
+{% endblock %}

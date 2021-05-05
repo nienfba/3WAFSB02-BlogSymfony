@@ -1,5 +1,5 @@
 {% extends 'admin.html.twig' %}
-{% block title %}Tous les catégories{% endblock %}
+{% block title %}Toutes les catégories{% endblock %}
 
 {% block body %}
 <section>
@@ -10,6 +10,7 @@
             <th>Image</th>
             <th>Titre</th>
             <th>Description</th>
+            <th>Articles</th>
             <th></th>
         </thead>
         <tbody>
@@ -21,9 +22,11 @@
                     {% endif %}</td>
                 <td>{{ category.title }}</td>
                 <td>{{ category.description|striptags|u.truncate(50, true, '...')|raw|nl2br }}</td>
-                <td><a href="{{ path('category_edit', {id:category.id}) }}"><i class="icon-edit"></i></a> <a
-                        href="{# {{ path('deleteCategory', {id:category.id}) }} #}" data-toggle="modal" data-target="#delete"
-                        data-id=" {{ category.id }}"><i class="icon-trash"></i></a></td>
+                <td>{{ category.articles|length }}</td>
+                <td>
+                    <a href="{{ path('category_edit', {id:category.id}) }}"><i class="icon-edit"></i></a> 
+                    <a href="{{ path('category_del_confirm', {'id': category.id}) }}" data-title="{{ category.title }}" data-toggle="modal" data-target="#delete"><i class="icon-trash"></i></a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
