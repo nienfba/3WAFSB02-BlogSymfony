@@ -1,0 +1,14 @@
+{% extends 'admin.html.twig' %}
+
+{% form_theme form "bootstrap_4_layout.html.twig" %}
+
+{% block title %}{% if (edit) %}Modifier{% else %}Ajouter{% endif %} un utilisateur{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="submit" value="{% if (edit) %}Editer{% else %}Ajouter{% endif %}" formnovalidate>
+    {{ form_end(form) }}
+{% endblock %}
+
+

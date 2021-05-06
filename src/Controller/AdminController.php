@@ -2,20 +2,24 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\UserType;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Entity\Category;
 use App\Form\ArticleType;
 use App\Form\CategoryType;
+use App\Service\FileUploader;
+use App\Repository\UserRepository;
 use App\Repository\ArticleRepository;
 use App\Repository\CommentRepository;
 use App\Repository\CategoryRepository;
-use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/admin")
@@ -138,8 +142,10 @@ class AdminController extends AbstractController
      */
     public function articleAdd(Article $article=null, Request $request, EntityManagerInterface $manager, FileUploader $fileUploader): Response
     {
-        if ($article == null) 
+        if ($article == null) {
             $article = new Article();
+            $article->setPublishedAt(new \DateTimeImmutable('now',new \DateTimeZone('Europe/Paris')));
+        }
         
         $form = $this->createForm(ArticleType::class, $article);
 
@@ -265,6 +271,93 @@ class AdminController extends AbstractController
         }
 
         return $this->redirectToRoute('comment_list');
+
+    }
+
+    /**
+     * @Route("/user/list", name="user_list")
+     */
+    public function userList(UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findBy([],['updatedAt'=>'DESC','createdAt'=>'DESC']);
+
+        // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
+        return $this->render('admin/user/list.html.twig', [
+            'users' => $users
+        ]);
+    }   
+
+
+     /**
+     * @Route("/user/add", name="user_add")
+     * @Route("/user/edit/{id}", name="user_edit")
+     */
+    public function userAdd(User $user=null, Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $passwordEncoder,  FileUploader $fileUploader): Response
+    {
+        if ($user == null) 
+            $user = new User();
+        
+        $form = $this->createForm(UserType::class, $user);
+
+        //On va lier l'objet formulaire avec la requête HTTP
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // Hash du mot de passe 
+            $password = $passwordEncoder->encodePassword($user, $form->get('plainPassword')->getData());
+            $user->setPassword($password);
+
+            //  Upload Avatar
+            $avatarUpload = $form->get('avatarUpload')->getData();
+            if ($avatarUpload) {
+                $picture = $fileUploader->upload($avatarUpload, 'user');
+                $user->setAvatar($picture);
+            }
+            /** On enregistre le commentaire */
+            $manager->persist($user);
+            $manager->flush();
+
+            /* Mettre dans la session que le commentaira bien été enregistré !*/
+            $this->addFlash('success','L\'utilisateur a bien été ajoutée');
+
+            return $this->redirectToRoute('user_list');
+        }
+
+        
+        // Récupération de la Reponse fournie par la vue Twig. On lui passe les articles
+        return $this->render('admin/user/add.html.twig', [
+            'form' => $form->createView(),
+            'edit' => ($user->getId())?true:false
+        ]);
+    }
+
+     /**
+     * @Route("/user/del/{id}", name="user_del", methods={"GET"})
+     */
+    public function userDel(User $user): Response
+    {
+        return $this->render('admin/user/del.html.twig', [
+            'user' => $user
+        ]);
+    }
+
+     /**
+     * @Route("/user/del/{id}", name="user_del_confirm", methods={"DELETE"})
+     */
+    public function userDelConfirm(User $user, Request $request, EntityManagerInterface $manager): Response
+    {
+        if ($this->isCsrfTokenValid('delete-value', $request->request->get('_token'))) {
+            $manager->remove($user);
+            $manager->flush();
+
+            $this->addFlash('success','L\utilisateur '.$user->getEmail().' a bien été supprimé');
+        }
+        else {
+            $this->addFlash('danger','Erreur de token ! Merci de reconfirmer !');
+        }
+
+        return $this->redirectToRoute('user_list');
 
     }
 

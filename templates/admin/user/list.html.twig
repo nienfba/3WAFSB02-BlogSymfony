@@ -1,0 +1,45 @@
+{% extends 'admin.html.twig' %}
+{% block title %}Tous les utilisateurs{% endblock %}
+
+{% block body %}
+<section>
+    <p class="text-right"><a href="{{ path('user_add') }}" class="btn btn-primary"><i class="icon-plus-square"></i> Ajouter un
+            utilisateur</a></p>
+    <table id="tableDonnee" class="table">
+        <thead>
+            <th>Avatar</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Création</th>
+            <th>Modification</th>
+            <th>Nb. articles</th>
+            <th>Valid</th>
+            <th></th>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{% if user.avatar != null %}
+                    <img class="img-thumbnail" width="200"
+                        src="{% if 'https://' not in user.avatar %}{{ asset('uploads/user/' ~ user.avatar )}}{% else %}{{ user.avatar }}{% endif %}">
+                    {% endif %}</td>
+                <td>{{ user.firstname }}</td>
+                <td>{{ user.lastname }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.createdAt | date('d/m/Y h:i') }}</td>
+                <td>{{ user.updatedAt | date('d/m/Y h:i') }}</td>
+                <td><span class="badge badge-pill badge-success">{{ user.articles | length }}</span></td>
+                <td>
+                   <span class="d-none">{{ user.valid }}</span>
+                   <a href="{# {{ path('article_publish', {id:article.id} ) }} #}"><i class="big {% if user.valid == true %}green icon-toggle-right{% else %}red icon-toggle-left{% endif %}"></i></a> 
+                </td>
+                <td><a href="{{ path('user_edit', {id:user.id}) }}"><i class="icon-edit"></i></a> 
+                    <a href="{{ path('user_del_confirm', {id:user.id}) }}" data-toggle="modal" data-target="#delete" data-title="{{ user.firstname }} {{ user.lastname }}"><i class="icon-trash"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}
